@@ -6,7 +6,6 @@ public class HuffmanEncoder {
 	private val MAX_ASCII = 256;
 	private var freqArray:Rail[int];
 	private var nChars:int;
-	private static val testText:String = "abracadabra";
 	private var text:String;
 	private var encodedText:String;
 	private var nodeArray:Rail[HuffmanNode];
@@ -28,9 +27,6 @@ public class HuffmanEncoder {
 	 */
 	public def setText(text:String) {
 		this.text = text;
-		freqArray = Rail.make[int](MAX_ASCII);
-		nChars = 0;
-		encodedText = "";
 	}
 
 	/**
@@ -45,6 +41,7 @@ public class HuffmanEncoder {
 	 * Counts the number of distinct characters in the text.
 	 */
 	public def countChars() {
+		nChars = 0;
 		for ([i] in 0..MAX_ASCII-1)
 			if (freqArray(i) != 0)
 				nChars++;
@@ -133,27 +130,5 @@ public class HuffmanEncoder {
 	 * Returns the encoded text.
 	 */
 	public def getEncodedText():String = encodedText;
-
-	/**
-	 * Test program that prints to the terminal.
-	 */
-	/*public static def main(args:Array[String](1)): Void {
-		val h:HuffmanEncoder = new HuffmanEncoder();
-		Console.OUT.println("Input Text:");
-		Console.OUT.println(testText);
-		h.setText(testText);
-		h.countFreq();
-		h.countChars();
-		Console.OUT.println("Character Frequencies:");
-		h.printFreq();
-		h.makeHuffmanTree();
-		h.generateCode();
-		Console.OUT.println("Huffman Code:");
-		h.printCode();
-		h.encodeText();
-		Console.OUT.println("Encoded Message:");
-		h.printText();
-		Console.OUT.println("Done");
-	}*/
 	
 }
