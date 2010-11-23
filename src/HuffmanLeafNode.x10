@@ -3,14 +3,14 @@
  */
 public class HuffmanLeafNode extends HuffmanNode {
 
-	private val character:char;
+	private val character:Char;
 
 	/**
 	 * Create a leaf node.
 	 * @param character the character to store in the node
 	 * @param weight the weight of the node.
 	 */
-	public def this(character:char, weight:int) {
+	public def this(character:Char, weight:Int) {
 		this.character = character;
 		this.weight = weight;
 	}
@@ -21,16 +21,17 @@ public class HuffmanLeafNode extends HuffmanNode {
 	 * Updates the code for each node in the tree.
 	 */
 	public def generateCode() {
-		hash(character.ord()) = code;
+		stringHash(character.ord()) = codeString;
+		hash(character.ord()) = new HuffmanCode(code, mask);
 	}
 
 	/**
 	 * Method for recursively printing the Huffman Code.
 	 */
 	public def printCode() {
-		Console.OUT.println("'" + character + "' = " + code);
+		Console.OUT.println("'" + character + "' = " + codeString);
 	}
 
-	public def toString():String = "(" + weight + ") '" + character + "' = " + code;
+	public def toString():String = "(" + weight + ") '" + character + "' = " + codeString;
 
 }

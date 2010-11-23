@@ -24,9 +24,13 @@ public class HuffmanFullNode extends HuffmanNode {
 	 * Updates the code for each node in the tree.
 	 */
 	public def generateCode() {
-		left.code = code + "0";
+		left.codeString = codeString + "0";
+		left.code = code << 1;
+		left.mask = (mask << 1) + 1;
 		left.generateCode();
-		right.code = code + "1";
+		right.codeString = codeString + "1";
+		right.code = (code << 1) + 1;
+		right.mask = (mask << 1) + 1;
 		right.generateCode();
 	}
 

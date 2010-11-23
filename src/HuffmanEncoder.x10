@@ -1,3 +1,5 @@
+import x10.io.FileReader;
+
 /**
  * A class that implements the Huffman encoding algorithm.
  */
@@ -5,7 +7,7 @@ public class HuffmanEncoder {
 
 	private val MAX_ASCII = 256;
 	private var freqArray:Rail[int];
-	private var nChars:int;
+	private var nChars:Int;
 	private var text:String;
 	private var encodedText:String;
 	private var nodeArray:Rail[HuffmanNode];
@@ -14,7 +16,7 @@ public class HuffmanEncoder {
 	private var hash:Rail[String];
 
 	/**
-	 * Constructs a HuffmanAlgorithm object.
+	 * Constructs a HuffmanEncoder object.
 	 */
 	public def this() {
 		freqArray = Rail.make[int](MAX_ASCII);
@@ -64,7 +66,7 @@ public class HuffmanEncoder {
 	public def makeHuffmanTree() {
 		// initialize heap
 		nodeArray = Rail.make[HuffmanNode](nChars); // initiate array for buildHeap
-		var n:int = 0;
+		var n:Int = 0;
 		for ([i] in 0..MAX_ASCII-1)
 			if (freqArray(i) != 0) {
 				nodeArray(n) = new HuffmanLeafNode(Char.chr(i), freqArray(i)); // fill array
@@ -103,7 +105,7 @@ public class HuffmanEncoder {
 	 * Encodes the text with the generated Huffman code.
 	 */
 	public def encodeText() {
-		hash = tree.hash;
+		hash = tree.stringHash;
 		for ([i] in 0..text.length()-1) {
 			encodedText += hash(text.charAt(i).ord());
 		}

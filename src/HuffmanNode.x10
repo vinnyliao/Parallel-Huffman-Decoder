@@ -3,19 +3,21 @@
  */
 public abstract class HuffmanNode {
 
-	private static val MAX_ASCII:int = 256;
-	protected static val hash:Rail[String] = Rail.make[String](MAX_ASCII);
-	protected var weight:int;
+	private static val MAX_ASCII:Int = 256;
+	protected static val stringHash:Rail[String] = Rail.make[String](MAX_ASCII);
+	protected static val hash:Rail[HuffmanCode] = Rail.make[HuffmanCode](MAX_ASCII);
+	protected var weight:Int;
+	protected var code:UByte = 0;
+	protected var mask:UByte = 0;
+	protected var codeString:String = "";
 
-	public def getWeight():int = weight;
+	public def getWeight():Int = weight;
 
 	public abstract def toString():String;
 
-	public abstract def generateCode():void;
+	public abstract def generateCode():Void;
 
-	public abstract def printCode():void;
-
-	public var code:String = "";
+	public abstract def printCode():Void;
 
 	public def compareTo(var that:Object):x10.lang.Int {
 		if (this.weight > (that as HuffmanNode).getWeight()) return 1;
