@@ -22,7 +22,7 @@ public class HuffmanLeafNode extends HuffmanNode {
 	 */
 	public def generateCode() {
 		stringHash(character.ord()) = codeString;
-		hash(character.ord()) = new HuffmanCode(code, mask);
+		hash(character.ord()) = new HuffmanCode(code, length);
 	}
 
 	/**

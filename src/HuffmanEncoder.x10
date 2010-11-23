@@ -1,4 +1,6 @@
+import x10.io.File;
 import x10.io.FileReader;
+import x10.io.FileWriter;
 
 /**
  * A class that implements the Huffman encoding algorithm.
@@ -6,37 +8,48 @@ import x10.io.FileReader;
 public class HuffmanEncoder {
 
 	private val MAX_ASCII = 256;
-	private var freqArray:Rail[int];
+	private var freqArray:Rail[Int];
 	private var nChars:Int;
-	private var text:String;
-	private var encodedText:String;
-	private var nodeArray:Rail[HuffmanNode];
-	private var heap:BinaryHuffmanNodeHeap;
+	//private var text:String;
+	//private var encodedText:String;
+	//private var nodeArray:Rail[HuffmanNode];
+	//private var heap:BinaryHuffmanNodeHeap;
 	private var tree:HuffmanNode;
-	private var hash:Rail[String];
+	//private var stringHash:Rail[String];
+	private var hash:Rail[HuffmanCode];
+	private var input:FileReader;
+	private var output:FileWriter;
 
 	/**
 	 * Constructs a HuffmanEncoder object.
 	 */
-	public def this() {
-		freqArray = Rail.make[int](MAX_ASCII);
+	public def this(input:File, output:File) {
+		freqArray = Rail.make[Int](MAX_ASCII);
 		nChars = 0;
-		encodedText = "";
+		//encodedText = "";
+		this.input = new FileReader(input);
+		this.output = new FileWriter(output);
 	}
 
 	/**
 	 * Sets the text to be encoded.
 	 */
-	public def setText(text:String) {
-		this.text = text;
-	}
+	//public def setText(text:String) {
+	//	this.text = text;
+	//}
 
 	/**
 	 * Counts the frequency of each character in the text and stores the count in an array.
 	 */
 	public def countFreq() {
+		for (char in input.chars()) {
+			freqArray(char.ord())++;
+		}
+		
+		/*
 		for ([i] in 0..text.length()-1)
 			freqArray(text.charAt(i).ord())++;
+		*/
 	}
 
 	/**
@@ -65,14 +78,14 @@ public class HuffmanEncoder {
 	 */
 	public def makeHuffmanTree() {
 		// initialize heap
-		nodeArray = Rail.make[HuffmanNode](nChars); // initiate array for buildHeap
+		var nodeArray:Rail[HuffmanNode] = Rail.make[HuffmanNode](nChars); // initiate array for buildHeap
 		var n:Int = 0;
 		for ([i] in 0..MAX_ASCII-1)
 			if (freqArray(i) != 0) {
 				nodeArray(n) = new HuffmanLeafNode(Char.chr(i), freqArray(i)); // fill array
 				n++;
 			}
-		heap = new BinaryHuffmanNodeHeap(nodeArray); // buildHeap
+		var heap:BinaryHuffmanNodeHeap = new BinaryHuffmanNodeHeap(nodeArray); // buildHeap
 		
 		// perform algorithm
 		var left:HuffmanNode;
@@ -101,36 +114,62 @@ public class HuffmanEncoder {
 		tree.printCode();
 	}
 
+	public def encode() {
+		var c:HuffmanCode;
+		var buffer:UByte = 0;
+		val select:UByte = 1;
+		var index:Int = 7;
+		
+		hash = tree.hash;
+		for (char in input.chars()) {
+			c = hash(char.ord());
+			for ([i] in c.length-1..0) {
+				if ( (c.code & (select << i)) > 0) {
+					buffer += (select << index);
+				}
+				index--;
+				if (index == -1) {
+					output.writeByte(buffer);
+					buffer = 0;
+					index = 7;
+				}
+			}
+		}
+		
+		if (index != 7)
+			output.writeByte(buffer);
+	}
+	
 	/**
 	 * Encodes the text with the generated Huffman code.
 	 */
-	public def encodeText() {
-		hash = tree.stringHash;
-		for ([i] in 0..text.length()-1) {
-			encodedText += hash(text.charAt(i).ord());
-		}
-	}
+	//public def encodeText() {
+	//	var stringHash:Rail[String] = tree.stringHash;
+	//	for ([i] in 0..text.length()-1) {
+	//		encodedText += hash(text.charAt(i).ord());
+	//	}
+	//}
 
 	/**
 	 * Prints the encoded text.
 	 */
-	public def printText() {
-		Console.OUT.println(encodedText);
-	}
+	//public def printText() {
+	//	Console.OUT.println(encodedText);
+	//}
 
 	/**
 	 * Returns the Huffman tree.
 	 */
-	public def getTree():HuffmanNode = tree;
+	//public def getTree():HuffmanNode = tree;
 
 	/**
 	 * Returns the hash.
 	 */
-	public def getHash():Rail[String] = hash;
+	public def getHash():Rail[HuffmanCode] = hash;
 
 	/**
 	 * Returns the encoded text.
 	 */
-	public def getEncodedText():String = encodedText;
+	//public def getEncodedText():String = encodedText;
 	
 }

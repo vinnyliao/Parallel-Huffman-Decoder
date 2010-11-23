@@ -8,7 +8,7 @@ public abstract class HuffmanNode {
 	protected static val hash:Rail[HuffmanCode] = Rail.make[HuffmanCode](MAX_ASCII);
 	protected var weight:Int;
 	protected var code:UByte = 0;
-	protected var mask:UByte = 0;
+	protected var length:Int = 0;
 	protected var codeString:String = "";
 
 	public def getWeight():Int = weight;
