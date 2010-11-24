@@ -10,12 +10,7 @@ public class HuffmanEncoder {
 	private val MAX_ASCII = 256;
 	private var freqArray:Rail[Int];
 	private var nChars:Int;
-	//private var text:String;
-	//private var encodedText:String;
-	//private var nodeArray:Rail[HuffmanNode];
-	//private var heap:BinaryHuffmanNodeHeap;
 	private var tree:HuffmanNode;
-	//private var stringHash:Rail[String];
 	private var hash:Rail[HuffmanCode];
 	private var input:FileReader;
 	private var output:FileWriter;
@@ -26,17 +21,9 @@ public class HuffmanEncoder {
 	public def this(input:File, output:File) {
 		freqArray = Rail.make[Int](MAX_ASCII);
 		nChars = 0;
-		//encodedText = "";
 		this.input = new FileReader(input);
 		this.output = new FileWriter(output);
 	}
-
-	/**
-	 * Sets the text to be encoded.
-	 */
-	//public def setText(text:String) {
-	//	this.text = text;
-	//}
 
 	/**
 	 * Counts the frequency of each character in the text and stores the count in an array.
@@ -45,11 +32,6 @@ public class HuffmanEncoder {
 		for (char in input.chars()) {
 			freqArray(char.ord())++;
 		}
-		
-		/*
-		for ([i] in 0..text.length()-1)
-			freqArray(text.charAt(i).ord())++;
-		*/
 	}
 
 	/**
@@ -139,37 +121,10 @@ public class HuffmanEncoder {
 		if (index != 7)
 			output.writeByte(buffer);
 	}
-	
-	/**
-	 * Encodes the text with the generated Huffman code.
-	 */
-	//public def encodeText() {
-	//	var stringHash:Rail[String] = tree.stringHash;
-	//	for ([i] in 0..text.length()-1) {
-	//		encodedText += hash(text.charAt(i).ord());
-	//	}
-	//}
-
-	/**
-	 * Prints the encoded text.
-	 */
-	//public def printText() {
-	//	Console.OUT.println(encodedText);
-	//}
-
-	/**
-	 * Returns the Huffman tree.
-	 */
-	//public def getTree():HuffmanNode = tree;
 
 	/**
 	 * Returns the hash.
 	 */
 	public def getHash():Rail[HuffmanCode] = hash;
-
-	/**
-	 * Returns the encoded text.
-	 */
-	//public def getEncodedText():String = encodedText;
 	
 }

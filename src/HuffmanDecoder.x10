@@ -6,7 +6,7 @@ import x10.io.FileWriter;
  * A class that implements a parallel Huffman decoding algorithm.
  */
 public class HuffmanDecoder {
-		
+	
 	private var hash:Rail[HuffmanCode];
 	private var stringHash:Rail[String];
 	private var encodedText:String;
@@ -35,7 +35,7 @@ public class HuffmanDecoder {
 				code <<= 1;
 				length++;
 				if ( (buffer & (select << i)) == 1 ) {
-					code++;
+					code += (1 as UByte);
 				}
 				if (decodeChar(code, length)) {
 					output.writeChar(c);

@@ -29,7 +29,7 @@ public class HuffmanFullNode extends HuffmanNode {
 		left.length = length + 1;
 		left.generateCode();
 		right.codeString = codeString + "1";
-		right.code = (code << 1) + 1;
+		right.code = (code << 1) + (1 as UByte);
 		right.length = length + 1;
 		right.generateCode();
 	}
