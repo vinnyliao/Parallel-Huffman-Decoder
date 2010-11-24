@@ -13,6 +13,7 @@ public class HuffmanEncoder {
 	private var tree:HuffmanNode;
 	private var hash:Rail[HuffmanCode];
 	private var input:FileReader;
+	private var input2:FileReader;
 	private var output:FileWriter;
 
 	/**
@@ -22,6 +23,7 @@ public class HuffmanEncoder {
 		freqArray = Rail.make[Int](MAX_ASCII);
 		nChars = 0;
 		this.input = new FileReader(input);
+		this.input2 = new FileReader(input);
 		this.output = new FileWriter(output);
 	}
 
@@ -99,15 +101,14 @@ public class HuffmanEncoder {
 	public def encode() {
 		var c:HuffmanCode;
 		var buffer:UByte = 0;
-		val select:UByte = 1;
 		var index:Int = 7;
 		
 		hash = tree.hash;
-		for (char in input.chars()) {
+		for (char in input2.chars()) {
 			c = hash(char.ord());
-			for ([i] in c.length-1..0) {
-				if ( (c.code & (select << i)) > 0) {
-					buffer += (select << index);
+			for ([i] in (c.length-1)..0) {
+				if ( (c.code(i/8) & ((1 as UByte) << (i%8))) > 0) {
+					buffer += ((1 as UByte) << index);
 				}
 				index--;
 				if (index == -1) {
@@ -120,6 +121,9 @@ public class HuffmanEncoder {
 		
 		if (index != 7)
 			output.writeByte(buffer);
+		
+		input.close();
+		output.close();
 	}
 
 	/**

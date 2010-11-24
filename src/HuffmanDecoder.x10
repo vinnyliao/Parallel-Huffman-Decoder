@@ -25,25 +25,32 @@ public class HuffmanDecoder {
 	
 	public def decodeSerial() {
 		var buffer:UByte = 0;
-		var code:UByte = 0;
+		var code:Rail[UByte] = Rail.make(64, (0 as UByte));
 		var length:Int = 0;
-		val select:UByte = 1;
 		
 		for (byte in input.bytes()) {
 			buffer = byte;
 			for ([i] in 7..0) {
-				code <<= 1;
 				length++;
-				if ( (buffer & (select << i)) == 1 ) {
-					code += (1 as UByte);
+				for ([j] in 63..1) {
+					code(j) = code(j) << 1;
+					if ( (code(j-1) & ((1 as UByte) << 7)) != 0 )
+						code(j) += (1 as UByte);
+				}
+				code(0) = code(0) << 1;
+				if ( (buffer & ((1 as UByte) << i)) != 0 ) {
+					code(0) += (1 as UByte);
 				}
 				if (decodeChar(code, length)) {
 					output.writeChar(c);
-					code = 0;
+					code.reset((0 as UByte));
 					length = 0;
 				}
 			}
 		}
+		
+		input.close();
+		output.close();
 	}
 	
 	public def decodeParallel() {
@@ -54,9 +61,9 @@ public class HuffmanDecoder {
 		
 	}
 	
-	private def decodeChar(byte:UByte, length:Int):Boolean {
+	private def decodeChar(code:Rail[UByte], length:Int):Boolean {
 		for ([i] in 0..hash.length()-1)
-			if (hash(i).equals(byte, length)) {
+			if (hash(i).equals(code, length)) {
 				c = Char.chr(i);
 				return true;
 			}

@@ -25,11 +25,28 @@ public class HuffmanFullNode extends HuffmanNode {
 	 */
 	public def generateCode() {
 		left.codeString = codeString + "0";
-		left.code = code << 1;
+		
+		for ([i] in 63..1) {
+			left.code(i) = code(i) << 1;
+			if ( (code(i-1) & (1 as UByte) << 7) != 0)
+				left.code(i) += (1 as UByte);
+		}
+		left.code(0) = code(0) << 1;
+		
 		left.length = length + 1;
 		left.generateCode();
+		
+		
 		right.codeString = codeString + "1";
-		right.code = (code << 1) + (1 as UByte);
+		
+		for ([i] in 63..1) {
+			right.code(i) = code(i) << 1;
+			if ( (code(i-1) & (1 as UByte) << 7) != 0)
+				right.code(i) += (1 as UByte);
+		}
+		right.code(0) = code(0) << 1;
+		right.code(0) += (1 as UByte);
+		
 		right.length = length + 1;
 		right.generateCode();
 	}

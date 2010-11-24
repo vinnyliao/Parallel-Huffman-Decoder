@@ -17,13 +17,16 @@ public class Tester {
 		he.generateCode();
 		Console.OUT.println("Huffman Code:");
 		he.printCode();
+		Console.OUT.println("Encoding...");
 		he.encode();
     	
+		Console.OUT.println("Decoding...");
 		val hd:HuffmanDecoder = new HuffmanDecoder(encoded, decoded, he.getHash());
 		val time = System.nanoTime();
 		hd.decodeSerial();
 		val runtime = (System.nanoTime() - time)/1000000;
 		Console.OUT.println("Runtime: " + runtime + "ms");
+		
     }
     
 }
