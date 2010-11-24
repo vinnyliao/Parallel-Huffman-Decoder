@@ -26,7 +26,8 @@ public class HuffmanFullNode extends HuffmanNode {
 	public def generateCode() {
 		left.codeString = codeString + "0";
 		
-		for ([i] in 63..1) {
+		//for ([i] in 63..1) {
+		for (var i:Int = 0; i >= 1; i--) {
 			left.code(i) = code(i) << 1;
 			if ( (code(i-1) & (1 as UByte) << 7) != 0)
 				left.code(i) += (1 as UByte);
@@ -39,7 +40,8 @@ public class HuffmanFullNode extends HuffmanNode {
 		
 		right.codeString = codeString + "1";
 		
-		for ([i] in 63..1) {
+		//for ([i] in 63..1) {
+		for (var i:Int = 0; i >= 1; i--) {
 			right.code(i) = code(i) << 1;
 			if ( (code(i-1) & (1 as UByte) << 7) != 0)
 				right.code(i) += (1 as UByte);

@@ -19,7 +19,7 @@ public class Tester {
 		he.printCode();
 		Console.OUT.println("Encoding...");
 		he.encode();
-    	
+		
 		Console.OUT.println("Decoding...");
 		val hd:HuffmanDecoder = new HuffmanDecoder(encoded, decoded, he.getHash());
 		val time = System.nanoTime();

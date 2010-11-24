@@ -30,9 +30,11 @@ public class HuffmanDecoder {
 		
 		for (byte in input.bytes()) {
 			buffer = byte;
-			for ([i] in 7..0) {
+			//for ([i] in 7..0) {
+			for (var i:Int = 7; i >= 0; i--) {
 				length++;
-				for ([j] in 63..1) {
+				//for ([j] in 63..1) {
+				for (var j:Int = 63; j >= 1; j--) {
 					code(j) = code(j) << 1;
 					if ( (code(j-1) & ((1 as UByte) << 7)) != 0 )
 						code(j) += (1 as UByte);
@@ -42,6 +44,7 @@ public class HuffmanDecoder {
 					code(0) += (1 as UByte);
 				}
 				if (decodeChar(code, length)) {
+					Console.OUT.print("." + c);
 					output.writeChar(c);
 					code.reset((0 as UByte));
 					length = 0;
@@ -62,11 +65,12 @@ public class HuffmanDecoder {
 	}
 	
 	private def decodeChar(code:Rail[UByte], length:Int):Boolean {
-		for ([i] in 0..hash.length()-1)
-			if (hash(i).equals(code, length)) {
+		for ([i] in 0..hash.length()-1) {
+			if (hash(i) != null && hash(i).equals(code, length)) {
 				c = Char.chr(i);
 				return true;
 			}
+		}
 		return false;
 	}
 	
@@ -75,7 +79,7 @@ public class HuffmanDecoder {
 	/**
 	 * Constructs a HuffmanDecoder object.
 	 */
-	public def this(stringHash:Rail[String], encodedText:String) {
+	/*public def this(stringHash:Rail[String], encodedText:String) {
 		this.stringHash = stringHash;
 		this.encodedText = encodedText;
 		decodedText = "";
@@ -104,5 +108,5 @@ public class HuffmanDecoder {
 	}
 	
 	public def getDecodedText():String = decodedText;
-	
+	*/
 }

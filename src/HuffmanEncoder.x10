@@ -106,7 +106,8 @@ public class HuffmanEncoder {
 		hash = tree.hash;
 		for (char in input2.chars()) {
 			c = hash(char.ord());
-			for ([i] in (c.length-1)..0) {
+			//for ([i] in c.length-1..0) {
+			for (var i:Int = c.length-1; i >=0 ; i--) {
 				if ( (c.code(i/8) & ((1 as UByte) << (i%8))) > 0) {
 					buffer += ((1 as UByte) << index);
 				}
