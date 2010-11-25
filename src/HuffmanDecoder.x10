@@ -25,16 +25,14 @@ public class HuffmanDecoder {
 	
 	public def decodeSerial() {
 		var buffer:UByte = 0;
-		var code:Rail[UByte] = Rail.make(64, (0 as UByte));
+		var code:Rail[UByte] = Rail.make(32, (0 as UByte));
 		var length:Int = 0;
 		
 		for (byte in input.bytes()) {
 			buffer = byte;
-			//for ([i] in 7..0) {
 			for (var i:Int = 7; i >= 0; i--) {
 				length++;
-				//for ([j] in 63..1) {
-				for (var j:Int = 63; j >= 1; j--) {
+				for (var j:Int = 31; j >= 1; j--) {
 					code(j) = code(j) << 1;
 					if ( (code(j-1) & ((1 as UByte) << 7)) != 0 )
 						code(j) += (1 as UByte);
@@ -44,7 +42,6 @@ public class HuffmanDecoder {
 					code(0) += (1 as UByte);
 				}
 				if (decodeChar(code, length)) {
-					Console.OUT.print("." + c);
 					output.writeChar(c);
 					code.reset((0 as UByte));
 					length = 0;
@@ -74,39 +71,4 @@ public class HuffmanDecoder {
 		return false;
 	}
 	
-	
-	
-	/**
-	 * Constructs a HuffmanDecoder object.
-	 */
-	/*public def this(stringHash:Rail[String], encodedText:String) {
-		this.stringHash = stringHash;
-		this.encodedText = encodedText;
-		decodedText = "";
-		filesize = 0;
-	}
-	
-	public def decodeText() {
-		var begin:Int = 0;
-		var end:Int = 1;
-		while (end <= encodedText.length()) {
-			if (decodeChar(encodedText.substring(begin, end))) {
-				decodedText += c;
-				begin = end;
-			}
-			end++;
-		}
-	}
-	
-	private def decodeChar(code:String):Boolean {
-		for ([i] in 0..stringHash.length()-1)
-			if (code.equals(stringHash(i))) {
-				c = Char.chr(i);
-				return true;
-			}
-		return false;
-	}
-	
-	public def getDecodedText():String = decodedText;
-	*/
 }
