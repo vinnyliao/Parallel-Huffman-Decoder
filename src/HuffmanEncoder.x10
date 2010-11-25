@@ -34,6 +34,7 @@ public class HuffmanEncoder {
 		for (char in input.chars()) {
 			freqArray(char.ord())++;
 		}
+		input.close();
 	}
 
 	/**
@@ -123,7 +124,7 @@ public class HuffmanEncoder {
 			output.writeByte(buffer);
 		}
 
-		input.close();
+		input2.close();
 		output.close();
 	}
 

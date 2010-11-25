@@ -5,7 +5,9 @@ public class Tester {
 	public static def main(args:Array[String]):Void {
 		val input:File = new File("input.txt");
 		val encoded:File = new File("encoded.txt");
-		val decoded:File = new File("decoded.txt");
+		val decodedSerial:File = new File("decodedSerial.txt");
+		val decodedParallel:File = new File("decodedParallel.txt");
+		val numAsyncs = 2;
 
 		val he:HuffmanEncoder = new HuffmanEncoder(input, encoded);
 
@@ -21,11 +23,16 @@ public class Tester {
 		he.encode();
 
 		Console.OUT.println("Decoding...");
-		val hd:HuffmanDecoder = new HuffmanDecoder(encoded, decoded, he.getHash());
-		val time = System.nanoTime();
+		val hd:HuffmanDecoder = new HuffmanDecoder(encoded, decodedSerial, decodedParallel, he.getHash(), numAsyncs);
+		var time:Long = System.nanoTime();
 		hd.decodeSerial();
-		val runtime = (System.nanoTime() - time)/1000000;
-		Console.OUT.println("Runtime: " + runtime + "ms");
+		var runtime:Long = (System.nanoTime() - time)/1000000;
+		Console.OUT.println("Serial Runtime: " + runtime + "ms");
+
+		time = System.nanoTime();
+		hd.decodeParallel();
+		runtime = (System.nanoTime() - time)/1000000;
+		Console.OUT.println("Parallel Runtime: " + runtime + "ms");
 	}
 
 }

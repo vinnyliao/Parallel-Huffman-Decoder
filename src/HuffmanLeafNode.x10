@@ -32,6 +32,4 @@ public class HuffmanLeafNode extends HuffmanNode {
 		Console.OUT.println("'" + character + "' = " + codeString);
 	}
 
-	public def toString():String = "(" + weight + ") '" + character + "' = " + codeString;
-
 }

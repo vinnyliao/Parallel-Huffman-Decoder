@@ -13,8 +13,6 @@ public abstract class HuffmanNode {
 
 	public def getWeight():Int = weight;
 
-	public abstract def toString():String;
-
 	public abstract def generateCode():Void;
 
 	public abstract def printCode():Void;
