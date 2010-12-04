@@ -2,6 +2,7 @@ import x10.io.ByteRailWriter;
 import x10.io.File;
 import x10.io.FileReader;
 import x10.io.FileWriter;
+import x10.util.ArrayList;
 
 /**
  * A class that implements a parallel Huffman decoding algorithm.
@@ -18,7 +19,7 @@ public class HuffmanDecoder {
 	private var cSerial:Char;
 	private var c:Rail[Char];
 
-	private val cl:Rail[CharList];
+	private val cl:Rail[ArrayList[CharListEntry]];
 
 	private var input:Rail[Byte];
 	private val filesize:Int;
@@ -37,9 +38,9 @@ public class HuffmanDecoder {
 		this.hash = hash;
 		this.numAsyncs = numAsyncs;
 		c = Rail.make[Char](numAsyncs);
-		cl = Rail.make[CharList](numAsyncs);
+		cl = Rail.make[ArrayList[CharListEntry]](numAsyncs);
 		for ([i] in 0..numAsyncs-1)
-			cl(i) = new CharList();
+			cl(i) = new ArrayList[CharListEntry]();
 		
 		inputWriter = new ByteRailWriter();
 		for (byte in inputFile.bytes())
@@ -100,11 +101,16 @@ public class HuffmanDecoder {
         var buffer:UByte = 0;
 		var code:Rail[UByte] = Rail.make(32, (0 as UByte));
 		var length:Int = 0;
+		var prevEntry:CharListEntry = null;
+		var temp:CharListEntry = null;
+		var eoc:Boolean = false;
+		var id_:Int = id;
 		
 		for (var i:Int = start; i <= stop; i++) {
 			buffer = input(i);
 
 			for (var j:Int = 7; j >= 0; j--) {
+				eoc = false;
 				length++;
 				for (var k:Int = 31; k >= 1; k--) {
 					code(k) = code(k) << 1;
@@ -116,14 +122,24 @@ public class HuffmanDecoder {
 					code(0) += (1 as UByte);
 				}
 				if (decodeCharParallel(code, length, id)) {
-					cl(id).addToTail(new CharListEntry(c(id), i, j));
+					temp = new CharListEntry(c(id), i, j);
+					if (cl(id_).contains(i, j)) {
+						
+					}
+					cl(id_).insertAfter(prevEntry, temp);
+					prevEntry = temp;
 					code.reset((0 as UByte));
 					length = 0;
+					eoc = true;
 				}
 			}
 			
-			
-			
+			if (i == stop) {
+				if (!eoc) {
+					id_ = (id == numAsyncs-1) ? id : id+1;
+					stop = (id_ == numAsyncs-1) ? filesize-1 : stop + chunkSize;
+				}
+			}
 		}
 	}
 

@@ -1,4 +1,27 @@
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+For the past week, websites have been buzzing with rumours that Nasa was about to unveil something big, something to do with extraterrestrial life - maybe even a real-life alien. Had they found evidence that we are not alone?
+
+The reality is nowhere near as epoch-making, but is a fascinating discovery that if confirmed will force a rethink of life on Earth and have implications for how we identify it on other planets.
+
+A bacterium discovered in a Californian lake appears to be able to use arsenic in its molecular make-up instead of phosphorus - even incorporating the toxic chemical into its DNA. That's significant because it goes against the general rule that all terrestrial life depends on six elements: oxygen, hydrogen, carbon, nitrogen, sulphur and phosphorus. These are needed to build DNA, proteins and fats and are some of the biological signatures of life that scientists look for on other planets.
+
+Christened GFAJ-1, the microbe lends weight to the notion held by some astrobiologists that there might be "weird" forms of life on Earth, as yet undiscovered, that use elements other than the basic six in their metabolism. Among those who have speculated is Prof Paul Davies, a cosmologist at Arizona State University and an author on the latest research.
+
+"This organism has dual capability - it can grow with either phosphorus or arsenic," said Davies. "That makes it very peculiar, though it falls short of being some form of truly 'alien' life belonging to a different tree of life with a separate origin. However, GFAJ-1 may be a pointer to even weirder organisms. The holy grail would be a microbe that contained no phosphorus at all."
+
+In a research paper published in the journal Science, Felisa Wolfe-Simon, a Nasa astrobiology research fellow in residence at the US Geological Survey, described a bacterium she found in California's highly salty and arsenic-rich Mono Lake. It is a strain of the Halomonadaceae family of "gamma proteobacteria".
+
+Although the microbe grew better when fed phosphorus, Wolfe-Simon successfully grew it in the laboratory on a diet that was very low in phosphorus and high in arsenic. Wolfe-Simon was surprised to find that the microbe appeared to have incorporated the arsenic molecules into its DNA, in place of phosphorus.
+
+Davies said that GFAJ-1 "is surely the tip of a big iceberg, and so has the potential to open up a whole new domain of microbiology".
+
+Wolfe-Simon said the discovery was about more than the contents of Mono Lake. "If something here on Earth can do something so unexpected, what else can life do that we haven't seen yet? Now is the time to find out."
+
+Arsenic and phosphorus are chemically similar. In fact arsenic is toxic precisely because biological cells cannot always tell the difference. They use arsenic instead of phosphorus, but because the arsenic-based compounds are less stable in water, cells are unable to function properly and die.
+
+Zita Martins, an astrobiologist at Imperial College London, said the research indicated the breadth of life on Earth. "The thing people have to remember is that it has been known for a long time that we have organisms we call extremophiles - organisms that live in so-called weird conditions. In that sense, life as we know it is not only the normal organisms but also organisms that live in conditions of extremely high temperature or really low temperature or acidic conditions. These are conditions you'd think that no organisms could grow. In that sense, this discovery could fit into that category ... because it is an organism that lives in conditions that are toxic."
+
+The discovery could have implications for the way scientists look for life on other planets. "For future space missions that try to detect life, if we are just concerned about the elements we should follow, we always included carbon, oxygen, nitrogen, hydrogen, sulphur and phosphorus," said Martins. "Now we have one more element we should follow."
+
+But she said that planned missions to look for signs of life, mainly to Mars, were not following individual elements but rather the more complex molecules that form the building blocks of life, such as amino acids and nucleic acids.
+
+Some researchers are not convinced that the study proves the microbe is incorporating the toxic element into its proteins and DNA. Steven Benner, an astrobiologist at the Foundation for Applied Molecular Evolution in Gainesville, Florida, told Science that this conclusion was "not established by this work".

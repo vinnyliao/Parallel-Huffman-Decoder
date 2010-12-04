@@ -43,6 +43,30 @@ public class CharList {
 			head.prev = null;
 		}
 	}
+	
+	public atomic def insertAfter(e1:CharListEntry, e2:CharListEntry) {
+		if (e1 == tail) {
+			addToTail(e2);
+			return;
+		}
+		e1.next.prev = e2;
+		e2.next = e1.next;
+		e1.next = e2;
+		e2.prev = e1;
+	}
+	
+	public atomic def remove(e:CharListEntry) {
+		if (e == tail) {
+			removeFromTail();
+			return;
+		}
+		if (e == head) {
+			removeFromHead();
+			return;
+		}
+		e.next.prev = e.prev;
+		e.prev.next = e.next;
+	}
 
 	public def getByteRail():Rail[Byte] {
 		val brw = new ByteRailWriter();
