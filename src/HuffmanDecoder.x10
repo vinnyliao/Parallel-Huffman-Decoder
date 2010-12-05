@@ -141,6 +141,7 @@ public class HuffmanDecoder {
 				}
 			}
 		}
+		cllock(id).decrementAndGet();
 
 		// decode next block if necessary
 		while (!eoc) {
@@ -149,6 +150,9 @@ public class HuffmanDecoder {
 				return;
 			} else {
 				id++;
+				while (cllock(id).get() > id) {
+					; // wait
+				}
 			}
 			start = chunkSize*id;
 			stop = (id == numAsyncs-1) ? filesize-1 : start + chunkSize - 1;
@@ -171,6 +175,7 @@ public class HuffmanDecoder {
 					if (decodeCharParallel(code, length, id_)) {
 						if (index < cl(id).size()) {
 							if (cl(id).get(index).char == c(id_)) {
+								cllock(id).decrementAndGet();
 								return;
 							}
 							while (index < cl(id).size() &&
@@ -198,8 +203,16 @@ public class HuffmanDecoder {
 					}
 				}
 			}
+			cllock(id).decrementAndGet();
 		}
-		
+
+		for ([i] in id_..numAsyncs-1) {
+			while (cllock(i).get() >= id_) {
+				; //wait
+			}
+			cllock(i).decrementAndGet();
+		}
+
 	}
 
 	private def decodeCharSerial(code:Rail[UByte], length:Int):Boolean {
