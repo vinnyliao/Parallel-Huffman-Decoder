@@ -7,7 +7,7 @@ public class Tester {
 		val encoded:File = new File("encoded.txt");
 		val decodedSerial:File = new File("decodedSerial.txt");
 		val decodedParallel:File = new File("decodedParallel.txt");
-		val numAsyncs = 16;
+		val numAsyncs = 2;
 
 		val he:HuffmanEncoder = new HuffmanEncoder(input, encoded);
 
