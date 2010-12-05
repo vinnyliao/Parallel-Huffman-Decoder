@@ -3,6 +3,7 @@ import x10.io.File;
 import x10.io.FileReader;
 import x10.io.FileWriter;
 import x10.util.ArrayList;
+import x10.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A class that implements a parallel Huffman decoding algorithm.
@@ -22,6 +23,9 @@ public class HuffmanDecoder {
 	// rail containing the decoded strings of each worker
 	private val cl:Rail[ArrayList[CharEntry]];
 
+	// rail of array list locks
+	private val cllock:Rail[AtomicInteger];
+
 	private var input:Rail[Byte];
 	private val filesize:Int;
 
@@ -40,8 +44,10 @@ public class HuffmanDecoder {
 		this.numAsyncs = numAsyncs;
 		c = Rail.make[Char](numAsyncs);
 		cl = Rail.make[ArrayList[CharEntry]](numAsyncs);
+		cllock = Rail.make[AtomicInteger](numAsyncs);
 		for ([i] in 0..numAsyncs-1) {
 			cl(i) = new ArrayList[CharEntry]();
+			cllock(i) = new AtomicInteger(i);
 		}
 
 		inputWriter = new ByteRailWriter();
