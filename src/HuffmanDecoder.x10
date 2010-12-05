@@ -210,7 +210,9 @@ public class HuffmanDecoder {
 			while (cllock(i).get() >= id_) {
 				; //wait
 			}
-			cllock(i).decrementAndGet();
+			if (cllock(i).get() == id_) {
+				cllock(i).decrementAndGet();
+			}
 		}
 
 	}
