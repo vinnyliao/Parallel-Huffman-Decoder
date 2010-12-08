@@ -18,9 +18,8 @@ public class HuffmanDecoder {
 
 	// rail containing the decoded strings of each worker
 	private val cl:Rail[ArrayList[CharEntry]];
-
-	// rail of array list locks
-//	private val cllock:Rail[AtomicInteger];
+	
+	private val pos:Rail[AtomicInteger];
 
 	private var input:Rail[Byte];
 	private val filesize:Int;
@@ -39,10 +38,9 @@ public class HuffmanDecoder {
 		this.hash = hash;
 		this.numAsyncs = numAsyncs;
 		cl = Rail.make[ArrayList[CharEntry]](numAsyncs);
-//		cllock = Rail.make[AtomicInteger](numAsyncs);
+		pos = Rail.make[AtomicInteger](numAsyncs);
 		for ([i] in 0..numAsyncs-1) {
 			cl(i) = new ArrayList[CharEntry]();
-//			cllock(i) = new AtomicInteger(i);
 		}
 
 		inputWriter = new ByteRailWriter();
@@ -95,7 +93,6 @@ public class HuffmanDecoder {
 			for (e in cl(i)) {
 				outputFileParallel.writeChar(e.char);
 			}
-			outputFileParallel.writeInt(5);
 		}
 
 		outputFileParallel.close();
@@ -106,6 +103,7 @@ public class HuffmanDecoder {
 		var id:Int = id_;
 		var start:Int = chunkSize*id;
 		var stop:Int = (id == numAsyncs-1) ? filesize-1 : start + chunkSize - 1;
+		pos(id_) = new AtomicInteger(start);
 
 		var buffer:UByte = 0;
 		var code:Rail[UByte] = Rail.make(32, (0 as UByte));
@@ -138,19 +136,18 @@ public class HuffmanDecoder {
 					eoc = true;
 				}
 			}
+			
+			pos(id_).incrementAndGet();
 		}
-//		cllock(id).decrementAndGet();
 
 		// decode next block if necessary
 		while (!eoc) {
 			// if this was the last block, return; otherwise decode the next block
 			if (id == numAsyncs-1) {
+				pos(id_).set(filesize);
 				return;
 			} else {
 				id++;
-//				while (cllock(id).get() > id) {
-//					; // wait
-//				}
 			}
 			start = chunkSize*id;
 			stop = (id == numAsyncs-1) ? filesize-1 : start + chunkSize - 1;
@@ -158,6 +155,10 @@ public class HuffmanDecoder {
 			for (var i:Int = start; i <= stop; i++) {
 				buffer = input(i);
 
+				while (i >= pos(id).get()) {
+					; // wait
+				}
+				
 				for (var j:Int = 7; j >= 0; j--) {
 					eoc = false;
 					length++;
@@ -173,7 +174,7 @@ public class HuffmanDecoder {
 					if (cd.decode(code, length)) {
 						if (index < cl(id).size()) {
 							if (cl(id).get(index).i == i && cl(id).get(index).j == j && cl(id).get(index).char == cd.getChar()) {
-//								cllock(id).decrementAndGet();
+								pos(id_).set(filesize);
 								return;
 							}
 							while (index < cl(id).size() &&
@@ -200,39 +201,12 @@ public class HuffmanDecoder {
 						eoc = true;
 					}
 				}
+				
+				pos(id_).incrementAndGet();
 			}
-//			cllock(id).decrementAndGet();
 		}
-
-//		for ([i] in id_..numAsyncs-1) {
-//			while (cllock(i).get() >= id_) {
-//				; //wait
-//			}
-//			if (cllock(i).get() == id_) {
-//				cllock(i).decrementAndGet();
-//			}
-//		}
+		pos(id_).set(filesize);
 
 	}
-
-//	private def decodeCharSerial(code:Rail[UByte], length:Int):Boolean {
-//		for ([i] in 0..hash.length()-1) {
-//			if (hash(i) != null && hash(i).equals(code, length)) {
-//				cSerial = Char.chr(i);
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-//
-//	private def decodeCharParallel(code:Rail[UByte], length:Int, id:Int):Boolean {
-//		for ([i] in 0..hash.length()-1) {
-//			if (hash(i) != null && hash(i).equals(code, length)) {
-//				c(id) = Char.chr(i);
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
 
 }
