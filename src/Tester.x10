@@ -5,6 +5,7 @@ public class Tester {
 	public static def main(args:Array[String]):Void {
 		// test parameters
 		val input:File = new File("input.txt");
+		val test:File = new File("test.out");
 		val encoded:File = new File("encoded.out");
 		val decoded:File = new File("decoded.out");
 		val numTrials:Int = 20;
@@ -17,6 +18,7 @@ public class Tester {
 		}
 
 		// encode input
+		Console.OUT.println("Encoding...");
 		val he:HuffmanEncoder = new HuffmanEncoder(input, encoded);
 		he.countFreq();
 		he.countChars();
@@ -24,17 +26,27 @@ public class Tester {
 		he.generateCode();
 		he.encode();
 		val hash:Rail[HuffmanCode] = he.getHash();
+		Console.OUT.println("Done encoding.");
 
 		// decode
 		var hd:HuffmanDecoder;
 		var time:Long = 0;
 		var runtime:Long = 0;
 
+		// test for correctness
+		Console.OUT.println("Testing for correctness...");
+		hd = new HuffmanDecoder(encoded, test, hash, 16);
+		hd.decode();
+		Console.OUT.println("Done testing for correctness.");
+		
 		// warm up run
+		Console.OUT.println("Warming up for performance test...");
 		hd = new HuffmanDecoder(encoded, decoded, hash, 1);
 		hd.decode();
+		Console.OUT.println("Done warming up for performance test.");
 
 		// test
+		Console.OUT.println("Using " + numTrials + " trials for each number of asyncs.");
 		Console.OUT.println("\tasyncs\taverage runtime (ms)");
 		for ([i] in 0..5) {
 			runtime = 0;
