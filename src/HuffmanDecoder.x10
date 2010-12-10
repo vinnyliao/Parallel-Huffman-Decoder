@@ -41,6 +41,7 @@ public class HuffmanDecoder {
 		pos = Rail.make[AtomicInteger](numAsyncs);
 		for ([i] in 0..numAsyncs-1) {
 			cl(i) = new ArrayList[CharEntry]();
+			pos(i) = new AtomicInteger();
 		}
 
 		inputWriter = new ByteRailWriter();
@@ -48,6 +49,7 @@ public class HuffmanDecoder {
 			inputWriter.write(byte);
 		}
 		this.input = inputWriter.toRail();
+		inputWriter.close();
 		inputFile.close();
 
 		filesize = input.length();
@@ -86,8 +88,8 @@ public class HuffmanDecoder {
 	}
 
 	public def decodeParallel() {
-		finish for ([i] in 0..numAsyncs-1) async {
-			decodeChunk(i);
+		finish for ([i] in 1..numAsyncs) async {
+			decodeChunk(numAsyncs-i);
 		}
 		for ([i] in 0..numAsyncs-1) {
 			for (e in cl(i)) {
@@ -103,18 +105,18 @@ public class HuffmanDecoder {
 		var id:Int = id_;
 		var start:Int = chunkSize*id;
 		var stop:Int = (id == numAsyncs-1) ? filesize-1 : start + chunkSize - 1;
-		pos(id_) = new AtomicInteger(start);
+		pos(id_).set(start-1);
 
 		var buffer:UByte = 0;
 		var code:Rail[UByte] = Rail.make(32, (0 as UByte));
 		var length:Int = 0;
 		val cd:CharDecoder = new CharDecoder(hash);
-		var prevEntry:CharEntry = null;
 		var temp:CharEntry = null;
 		var eoc:Boolean = false;
 
 		// decode assigned block
 		for (var i:Int = start; i <= stop; i++) {
+			pos(id_).incrementAndGet();
 			buffer = input(i);
 
 			for (var j:Int = 7; j >= 0; j--) {
@@ -130,14 +132,13 @@ public class HuffmanDecoder {
 					code(0) += (1 as UByte);
 				}
 				if (cd.decode(code, length)) {
-					atomic cl(id).add(new CharEntry(cd.getChar(), i, j));
+					temp = new CharEntry(cd.getChar(), i, j);
+					atomic cl(id).add(temp);
 					code.reset((0 as UByte));
 					length = 0;
 					eoc = true;
 				}
 			}
-			
-			pos(id_).incrementAndGet();
 		}
 
 		// decode next block if necessary
@@ -153,12 +154,22 @@ public class HuffmanDecoder {
 			stop = (id == numAsyncs-1) ? filesize-1 : start + chunkSize - 1;
 			var index:Int = 0;
 			for (var i:Int = start; i <= stop; i++) {
+				// increment our position
+				pos(id_).incrementAndGet();
+
+				// make sure we don't pass a higher ranked worker
+				for ([j] in id..numAsyncs-1) {
+					if (pos(j).get() != filesize) {
+						while (i >= pos(j).get()) {
+							; // wait
+						}
+					}
+				}
+
+				// load the next byte
 				buffer = input(i);
 
-				while (i >= pos(id).get()) {
-					; // wait
-				}
-				
+				// for each bit in the byte
 				for (var j:Int = 7; j >= 0; j--) {
 					eoc = false;
 					length++;
@@ -172,28 +183,32 @@ public class HuffmanDecoder {
 						code(0) += (1 as UByte);
 					}
 					if (cd.decode(code, length)) {
+						temp = new CharEntry(cd.getChar(), i, j);
 						if (index < cl(id).size()) {
 							if (cl(id).get(index).i == i && cl(id).get(index).j == j && cl(id).get(index).char == cd.getChar()) {
 								pos(id_).set(filesize);
 								return;
 							}
+							// remove all incorrect entries from the list up to this point in the file
 							while (index < cl(id).size() &&
 									(
 										cl(id).get(index).i < i ||
 										(
 											cl(id).get(index).i == i &&
-											cl(id).get(index).j > j
+											cl(id).get(index).j >= j
 										)
 									)) {
 								atomic cl(id).removeAt(index);
 							}
+							// insert or add the correct entry to the list);
 							if (index < cl(id).size()) {
-								atomic cl(id).addBefore(index, new CharEntry(cd.getChar(), i, j));
+								atomic addBefore(cl(id), index, temp);
 							} else {
-								atomic cl(id).add(new CharEntry(cd.getChar(), i, j));
+								atomic cl(id).add(temp);
 							}
 						} else {
-							atomic cl(id).add(new CharEntry(cd.getChar(), i, j));
+							// add the correct entry to the list
+							atomic cl(id).add(temp);
 						}
 						index++;
 						code.reset((0 as UByte));
@@ -201,12 +216,23 @@ public class HuffmanDecoder {
 						eoc = true;
 					}
 				}
-				
-				pos(id_).incrementAndGet();
+			}
+			while (cl(id).getLast() != temp) {
+				atomic cl(id).removeLast();
 			}
 		}
 		pos(id_).set(filesize);
 
+		return;
+	}
+
+	private def addBefore(al:ArrayList[CharEntry], index:Int, ce:CharEntry) {
+		val last:Int = al.size() - 1;
+		al.add(al.get(last));
+		for (var i:Int = last; i > index; i--) {
+			al.set(al.get(i-1), i);
+		}
+		al.set(ce, index);
 	}
 
 }
