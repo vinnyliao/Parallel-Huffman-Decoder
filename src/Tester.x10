@@ -3,36 +3,49 @@ import x10.io.File;
 public class Tester {
 
 	public static def main(args:Array[String]):Void {
+		// test parameters
 		val input:File = new File("input.txt");
-		val encoded:File = new File("encoded.txt");
-		val decodedSerial:File = new File("decodedSerial.txt");
-		val decodedParallel:File = new File("decodedParallel.txt");
-		val numAsyncs = 2;
+		val encoded:File = new File("encoded.out");
+		val decoded:File = new File("decoded.out");
+		val numTrials:Int = 20;
+		val numAsyncs:Rail[Int] = Rail.make[Int](6); // 0, 1, 2, 4, 8, 16
+		numAsyncs(0) = 0;
+		var n:Int = 1;
+		for ([i] in 1..5) {
+			numAsyncs(i) = n;
+			n *= 2;
+		}
 
+		// encode input
 		val he:HuffmanEncoder = new HuffmanEncoder(input, encoded);
-
 		he.countFreq();
 		he.countChars();
-		//Console.OUT.println("Character Frequencies:");
-		//he.printFreq();
 		he.makeHuffmanTree();
 		he.generateCode();
-		//Console.OUT.println("Huffman Code:");
-		//he.printCode();
-		Console.OUT.println("Encoding...");
 		he.encode();
+		val hash:Rail[HuffmanCode] = he.getHash();
 
-		Console.OUT.println("Decoding...");
-		val hd:HuffmanDecoder = new HuffmanDecoder(encoded, decodedSerial, decodedParallel, he.getHash(), numAsyncs);
-		var time:Long = System.nanoTime();
-		hd.decodeSerial();
-		var runtime:Long = (System.nanoTime() - time)/1000000;
-		Console.OUT.println("Serial Runtime: " + runtime + "ms");
+		// decode
+		var hd:HuffmanDecoder;
+		var time:Long = 0;
+		var runtime:Long = 0;
 
-		time = System.nanoTime();
-		hd.decodeParallel();
-		runtime = (System.nanoTime() - time)/1000000;
-		Console.OUT.println("Parallel Runtime: " + runtime + "ms");
+		// warm up run
+		hd = new HuffmanDecoder(encoded, decoded, hash, 1);
+		hd.decode();
+
+		// test
+		Console.OUT.println("\tasyncs\taverage runtime (ms)");
+		for ([i] in 0..5) {
+			runtime = 0;
+			for ([j] in 1..numTrials) {
+				hd = new HuffmanDecoder(encoded, decoded, hash, numAsyncs(i));
+				time = System.nanoTime();
+				hd.decode();
+				runtime += (System.nanoTime() - time)/1000000;
+			}
+			Console.OUT.println("\t" + numAsyncs(i) + "\t" + (runtime/numTrials));
+		}
 	}
 
 }
